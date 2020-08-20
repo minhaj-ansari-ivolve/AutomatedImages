@@ -1,0 +1,9 @@
+
+WordPress,https://bitnami.com/redirect/to/1117914/bitnami-wordpress-5.5-0-linux-debian-10-x86_64.ova
+Publify,https://bitnami.com/redirect/to/1102197/bitnami-publify-9.1.0-20-linux-debian-10-x86_64.ova
+Drupal,https://bitnami.com/redirect/to/1118503/bitnami-drupal-9.0.3-4-linux-debian-10-x86_64-nami.ova
+Joomla!,https://bitnami.com/redirect/to/1118424/bitnami-joomla-3.9.20-6-r05-linux-debian-10-x86_64-nami.ova
+WordPress,https://bitnami.com/redirect/to/1117914/bitnami-wordpress-5.5-0-linux-debian-10-x86_64.ova
+Publify,https://bitnami.com/redirect/to/1102197/bitnami-publify-9.1.0-20-linux-debian-10-x86_64.ova
+Drupal,https://bitnami.com/redirect/to/1118503/bitnami-drupal-9.0.3-4-linux-debian-10-x86_64-nami.ova
+Joomla!,https://bitnami.com/redirect/to/1118424/bitnami-joomla-3.9.20-6-r05-linux-debian-10-x86_64-nami.ova

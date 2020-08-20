@@ -1,0 +1,271 @@
+package automationTest;
+
+import java.util.List;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+  
+import org.apache.poi.ss.usermodel.Cell;  
+import org.apache.poi.ss.usermodel.*;  
+import org.apache.poi.ss.usermodel.Sheet;  
+import org.apache.poi.ss.usermodel.Workbook;  
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.sql.*; 
+
+
+public class UsingChrome {
+	
+	ChromeDriver driver;
+	String creation = "";
+	String url = "https://bitnami.com/stacks/virtual-machine";
+	String path = "/home/minhaj/Images/ImagesURL.txt";
+	
+	public void invokeBrowser() {
+		
+		System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+		
+		driver = new ChromeDriver();
+		
+		driver.manage().window().maximize();
+	}
+	
+	
+	public void OpenURL() {
+		driver.get(url);
+	}
+	
+	
+	public void createFile() {
+		try {
+            Files.write(Paths.get(path), creation.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	
+	public void getTitle() {
+		String titleOfThePage = driver.getTitle();
+		System.out.println("Title of the Page: " + titleOfThePage);
+	}
+	
+	
+	public void closeBrowser() {
+		driver.quit();
+	}
+	
+	
+	public void SearchImage(String name) {
+		
+		try {
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+		WebElement ImageName = driver.findElement(By.id("stackSearch"));
+		ImageName.sendKeys(name);
+		
+		Thread.sleep(3000);
+
+		js.executeScript("window.scrollBy(0,1000)");
+		String xpath= "//*[text()="+"'"+name+"']";
+		System.out.println(xpath);
+		WebElement ImageText = driver.findElement(By.xpath(xpath));
+		ImageText.click();
+		
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex.toString());
+			for(int counter=0; counter<5; counter++) {
+				System.out.println("***");
+			}
+			System.out.println("Error in file " + name);
+			for(int counter=0; counter<5; counter++) {
+				System.out.println("***");
+			}
+			
+		}
+	}
+	
+	
+	public String SaveURL(String name) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("window.scrollBy(0,1000)");
+		
+		WebElement DownloadText = driver.findElement(By.cssSelector("a[class='indirect_download_link button button-action']"));
+		DownloadText.click();
+		String DownloadURL = DownloadText.getAttribute("href");
+		System.out.println("Download URL: " + DownloadURL);	
+		
+		return DownloadURL;
+	}
+	
+	
+	public String GetVersion() {
+		WebElement VersionText = driver.findElement(By.cssSelector("p[aria-label='Current version']"));
+		String TheVersion = VersionText.getAttribute("textContent");
+		System.out.print("Image Version: " + TheVersion);
+		return TheVersion;
+	}
+	
+	
+	public String ReadCellData(int vRow, int vColumn)  
+	{  
+		String value=null;          //variable for storing the cell value  
+		Workbook wb=null;           //initialize Workbook null  
+		try  
+		{  
+			//reading data from a file in the form of bytes  
+			FileInputStream fis=new FileInputStream("Btinami-Images for Marketplace.xlsx");  
+			//constructs an XSSFWorkbook object, by buffering the whole stream into the memory  
+			wb=new XSSFWorkbook(fis);  
+		}  
+		catch(FileNotFoundException e)  
+		{  
+			e.printStackTrace();  
+		}  
+		catch(IOException e1)  
+		{  
+			e1.printStackTrace();  
+		}  
+		Sheet sheet=wb.getSheetAt(0);   //getting the XSSFSheet object at given index  
+		Row row=sheet.getRow(vRow); //returns the logical row  
+		Cell cell=row.getCell(vColumn); //getting the cell representing the given column  
+		value=cell.getStringCellValue();    //getting cell value  
+		return value;               //returns the cell value  
+	}
+	
+	
+	public void runScript(String command){
+		Process p;
+        try {
+            List<String> cmdList = new ArrayList<String>();
+            cmdList.add("gnome-terminal");
+            cmdList.add("-e");
+            cmdList.add(command);
+            ProcessBuilder pb = new ProcessBuilder(cmdList);
+            p = pb.start();
+                
+            p.waitFor(); 
+            BufferedReader reader=new BufferedReader(new InputStreamReader(
+             p.getInputStream())); 
+            String line; 
+            while((line = reader.readLine()) != null) { 
+                System.out.println(line);
+            } 
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+	
+	
+	public void DBSave(String DBName, String DBVersion, String DBURL) {
+		try{
+			int counter = 0;
+			String imageVersion = null;
+			String imageName = null;
+			String MyDriver = "com.mysql.jdbc.Driver";
+			String MyDB = "jdbc:mysql://localhost:3306/ivolve_db";
+			Class.forName(MyDriver);  
+			Connection conn=DriverManager.getConnection(MyDB,"root","");
+			
+			String query = "Select * from imagesinfo";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			while(rs.next()) {
+				imageName = rs.getString("name");
+				if(imageName == DBName) {
+					imageVersion = rs.getString("version");
+					counter++;
+					
+					if(imageVersion == DBVersion) { }
+					else {
+						String queryInsert = " insert into imagesinfo (name, version, address)" + " values (?, ?, ?)";
+						PreparedStatement stmtInsert = conn.prepareStatement(queryInsert);
+						stmtInsert.setString(1, DBName);
+						stmtInsert.setString(2, DBVersion);
+						stmtInsert.setString(3, DBURL);
+						stmtInsert.execute();
+						
+						//try {
+							FileWriter fw = new FileWriter(path,true);
+							fw.write(System.lineSeparator());
+						    fw.write(DBName + "," + DBURL);
+						    fw.close();
+				        //} catch (IOException e) {
+				          //  e.printStackTrace();
+				        }
+					
+				}
+				else {}
+			}
+			
+/*			if(counter == 0) {
+				String queryInsert2 = " insert into imagesinfo (name, version, address)" + " values (?, ?, ?)";
+				PreparedStatement stmtInsert = conn.prepareStatement(queryInsert2);
+				stmtInsert.setString(1, DBName);
+				stmtInsert.setString(2, DBVersion);
+				stmtInsert.setString(3, DBURL);
+				stmtInsert.execute();
+				
+				try {
+					FileWriter fw = new FileWriter(path,true);
+					fw.write(System.lineSeparator());
+				    fw.write(DBName + "," + DBURL);
+				    fw.close();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        
+			}
+*/		
+			conn.close();
+			
+		}catch(Exception e){ System.out.println(e);
+		}
+			
+	}
+	
+	
+	public static void main(String[] args) {
+		UsingChrome chr = new UsingChrome();
+		String BashPath = "bash /home/minhaj/Images/scripts.sh";
+		
+		chr.createFile();
+		chr.invokeBrowser();
+		
+		for(int i=1; i<5; i++) 
+		{
+			try {
+				String name=chr.ReadCellData(i, 0);   
+				System.out.println(name);
+		
+				chr.OpenURL(); 
+				chr.getTitle();
+				chr.SearchImage(name);
+				String version = chr.GetVersion();
+				String address = chr.SaveURL(name);
+				chr.DBSave(name, version, address);
+			}
+			catch(Exception ex)
+			{
+				continue;
+			}
+		}
+		
+		chr.closeBrowser();
+		
+		chr.runScript(BashPath);
+	}
+
+}

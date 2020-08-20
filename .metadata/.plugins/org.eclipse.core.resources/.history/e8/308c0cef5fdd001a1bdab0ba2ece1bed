@@ -1,0 +1,63 @@
+package seleniumScript;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class UsingChrome {
+	
+	ChromeDriver driver;
+	String url = "https://bitnami.com/stacks/virtual-machine";
+	String name = "Django";
+	
+	public void invokeBrowser() {
+		
+		System.setProperty("webdriver.chrome.driver", "C:\\Selenium\\chromedriver.exe");
+		
+		driver = new ChromeDriver();
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		driver.manage().window().maximize();
+		driver.get(url);
+	}
+	
+	public void getTitle() {
+		String titleOfThePage = driver.getTitle();
+		System.out.println("Title of the Page: " + titleOfThePage);
+	}
+	
+	public void closeBrowser() {
+		driver.quit();
+	}
+	
+	public void SearchImage() {
+		
+		try {
+		WebElement ImageName = driver.findElement(By.id("stackSearch"));
+		ImageName.sendKeys(name);
+		
+		Thread.sleep(6000);
+		
+		WebElement ImageText = driver.findElement(By.xpath("//*[text()='Django']"));
+		ImageText.click();
+		System.out.println("i am here");
+		
+		
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex.toString());
+			
+		}
+		//driver.findElement(By.cssSelector("a[href*='django']")).click();
+	}
+	
+	public static void main(String[] args) {
+		UsingChrome chr = new UsingChrome();
+		chr.invokeBrowser();
+		chr.getTitle();
+		chr.SearchImage();
+		chr.closeBrowser();
+	}
+
+}

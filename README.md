@@ -14,9 +14,9 @@ Java with Selenium and Bash Scripting is used to Automate the process of downloa
 
 ## Execution
 
-1: First Move Chromedriver from "Selenium Test" folder to specific location to work on ubuntu
+1. First Move Chromedriver from "Selenium Test" folder to specific location to work on ubuntu
 sudo mv -f chromedriver /usr/bin
-2: You can use exported jar file file in "Deployment Folder" which is "DockerCode.jar" OR Use Eclipse and add given external JAR files in eclipse and run code given in "automationTest" folder within "Selenium Test" folder
+2. You can use exported jar file file in "Deployment Folder" which is "DockerCode.jar" OR Use Eclipse and add given external JAR files in eclipse and run code given in "automationTest" folder within "Selenium Test" folder
 
 ## Notes
 

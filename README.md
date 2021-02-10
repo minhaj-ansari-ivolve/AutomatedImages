@@ -1,4 +1,4 @@
-# AutomatedImages
+# Automated Images
 
 ## Introduction
 Java with Selenium and Bash Scripting is used to Automate the process of downloading specific images and converting it .qcow2 format from .ova.
